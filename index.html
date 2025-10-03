@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KOICHI USHIJIMA — Portfolio</title>
+  <meta name="description" content="牛島　洸一 — Portfolio (自主制作 / 写真 / プロセス)" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- Reset --- */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: 'Inter', 'Helvetica Neue', 'Noto Sans JP', Arial, sans-serif;
+      background:#fff;
+      color:#111;
+      -webkit-font-smoothing:antialiased;
+      line-height:1.65;
+    }
+
+    /* --- Sidebar --- */
+    :root{
+      --aside-w:220px;
+      --g: clamp(12px, 2.4vw, 28px);
+      --muted:#6e6e6e;
+    }
+    aside{
+      position:fixed;
+      top:0; left:0;
+      width:var(--aside-w);
+      height:100vh;
+      padding: calc(var(--g) * 1.6) calc(var(--g) * 0.8);
+      border-right:1px solid #eee;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      gap:calc(var(--g) * 0.6);
+    }
+    .brand{
+      font-weight:700;
+      letter-spacing:0.03em;
+      text-transform:uppercase;
+      line-height:1.05;
+      font-size:1.05rem;
+      margin-bottom:calc(var(--g) * 0.8);
+    }
+    nav.primary{ display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+    nav.primary a{
+      text-decoration:none;
+      color:inherit;
+      font-weight:600;
+      font-size:0.95rem;
+      padding:6px 0;
+    }
+    nav.primary a:hover{ color:#333; }
+
+    /* --- Main --- */
+    main{
+      margin-left: calc(var(--aside-w) + 24px);
+      max-width:1100px;
+      padding: calc(var(--g) * 1.6) 40px;
+    }
+    section{ margin-bottom: calc(var(--g) * 3.2); }
+    .section-title{ font-size:1.1rem; font-weight:600; margin-bottom:12px; border-bottom:1px solid #f2f2f2; padding-bottom:8px; }
+
+    /* ABOUT text formatting */
+    .about p{ color:var(--muted); margin:10px 0; white-space:pre-line; font-size:0.98rem; }
+
+    /* --- Works grid --- */
+    .works-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:20px;
+    }
+    .work-card{
+      background:#fff;
+      border:1px solid #f0f0f0;
+      border-radius:8px;
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform .18s ease, box-shadow .18s ease;
+      display:flex;
+      flex-direction:column;
+      min-height: 100%;
+    }
+    .work-card:hover{ transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+    .work-card img{ width:100%; height:220px; object-fit:cover; display:block; }
+    .work-meta{ padding:12px 14px 18px 14px; }
+    .work-meta h3{ font-size:1rem; margin:0 0 6px 0; font-weight:700; }
+    .work-meta p{ margin:0; color:var(--muted); font-size:0.92rem; }
+
+    /* --- Modal (image + info + nav) --- */
+    .modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.76);
+      align-items:center;
+      justify-content:center;
+      z-index:1400;
+      padding:28px;
+    }
+    .modal.open{ display:flex; }
+    .modal-panel{
+      width:100%;
+      max-width:1100px;
+      background:#fff;
+      border-radius:8px;
+      padding:18px;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:18px;
+      align-items:start;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.32);
+    }
+    .modal-media img{ width:100%; height:auto; border-radius:6px; display:block; }
+    .modal-info h3{ margin:0 0 8px 0; font-size:1.05rem; }
+    .modal-info p{ margin:0; color:var(--muted); white-space:pre-wrap; font-size:0.95rem; }
+    .modal-close{
+      position:absolute; top:18px; right:18px;
+      background:transparent; border:0; color:#fff; font-size:30px; cursor:pointer;
+    }
+    .modal-nav{ display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
+    .modal-nav button{ background:#111; color:#fff; border:0; padding:8px 10px; border-radius:6px; cursor:pointer; }
+
+    footer{ margin-top:18px; color:var(--muted); font-size:0.9rem; }
+
+    /* --- Responsive --- */
+    @media (max-width: 900px){
+      :root{ --aside-w:72px; }
+      aside{ width:72px; padding:18px 10px; }
+      .brand{ font-size:0.95rem; }
+      main{ margin-left: calc(var(--aside-w) + 14px); padding:22px; }
+      .work-card img{ height:180px; }
+      .modal-panel{ grid-template-columns:1fr; }
+    }
+    @media (max-width: 700px){
+      aside{
+        position:fixed; top:0; left:0; right:0; height:auto; width:100%;
+        flex-direction:row; align-items:center; justify-content:space-between;
+        border-right:none; border-bottom:1px solid #eee; padding:12px 16px;
+      }
+      nav.primary{ flex-direction:row; gap:10px; }
+      main{ margin-left:0; padding-top: calc(56px + 12px); padding-left:16px; padding-right:16px; }
+    }
+
+    /* small helper */
+    .muted{ color:var(--muted) !important; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside aria-label="Main sidebar">
+    <div class="brand">KOICHI<br>USHIJIMA</div>
+
+    <nav class="primary" aria-label="Primary navigation">
+      <a href="#about">ABOUT</a>
+      <a href="#works">WORKS</a>
+      <a href="#process">PROCESS</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main role="main">
+    <!-- ABOUT -->
+    <section id="about" aria-labelledby="about-title">
+      <h2 id="about-title" class="section-title">ABOUT</h2>
+      <div class="about">
+　　　　<img src="test.png" alt="自分のポートレート" style="float:right;margin:0 0 1rem 1.5rem; width:250px; border-radius:12px;">
+        <p><strong>名前：</strong>牛島　洸一</p>
+
+        <p><strong>1. 自分の理念</strong><br>
+        異分野の知識とデジタル表現で、「情報社会の課題を昇華（アウフヘーベン）」するデザインを探求</p>
+
+        <p><strong>2. 基本情報と制作スタンス</strong>
+        年齢：23歳
+        出身：弘学館高等学校 / 慶應義塾大学医学部医学科
+        <strong>・スタンス：</strong>医療系学部で養った論理的思考力と、デジタル技術（Blender/Unity）を用いた立体的な構想力を融合させ、表面的な情報整理に留まらない、社会の核心に迫る情報デザインを志向。</p>
+
+        <p><strong>3. 情報デザインへの関心と志望動機</strong>
+        私は高校卒業後、医療系学部で４年間、人の身体や構造と向き合うその過程で、「情報が人に与える影響」、特に「不安や誤解のない正確な伝達」の重要性を痛感した。しかし、根源的に抱えていたアートやデザインと向き合いたいという欲求との乖離を強く感じ、自身の持つ表現力と社会への貢献意欲を最大限に活かせる道として、情報デザインへの転向を決意した。情報が氾濫する現代社会において、私は「情報社会におけるアンチテーゼ」を掲げ、ただの便利さや美しさではなく本質的な課題を解決し、より高い次元へと導く「止揚」をデザインで実現したいと考え情報デザイン専攻を志望した。</p>
+
+        <p><strong>4. 制作スキルと経験</strong>
+        <strong>・デジタルメディア技術：</strong>
+        幼少期から今に至るまでゲームが好きで、特に昨今はAR/VRに興味がありBlenderやUnityといった3D・インタラクティブな制作環境に独学で触れてきた。現在では趣味として、現実空間とデジタル空間をつなぐような「小物制作」に取り組んでいる。これは、平面デザインだけでなく、情報や体験を空間的・時間的に捉える力につながる大きなアドバンテージであると思う。
+        <strong>・視覚表現の基礎：</strong>
+        幼少期からの趣味である写真は、私の「観察力」の基盤となった。高校時代には美術部で写真専攻として活動し、佳作などの受賞経験を通じ、光・構図・メッセージ性を一枚の視覚情報に凝縮する力を磨いた。</p>
+
+        <p><strong>5. 将来の展望</strong>
+        情報デザイン学科情報デザイン専攻で、これまでに培った異分野の知識と論理的思考、及び3D・インタラクティブな表現技術を、体系的なデザイン理論と結びつけたいと考えている。特に、インターネットに小さい頃から触れてきた人間として、情報に埋没する現代のユーザーに対して、「価値ある情報」を「深く視覚的に理解させる」ための新しいメディア表現やUI/UXを追求し、多方面と連携し社会構築できるデザイナーを目指したい。</p>
+      </div>
+    </section>
+
+    <!-- WORKS -->
+    <section id="works" aria-labelledby="works-title">
+      <h2 id="works-title" class="section-title">WORKS</h2>
+
+      <div class="works-grid" id="worksGrid">
+        <article class="work-card" tabindex="0"
+                 data-title="デッサンと平面構成"
+                 data-desc="今年の七月から画塾に通いデッサンと平面構成と始めた。"
+                 data-series='[
+                 "dessin.jpg",
+                 "2.jpg",
+                 "3.jpg",
+                 "4.jpg",
+                 "5.jpg",
+                 "6.jpg",
+                 "7.jpg"
+                 ]'>
+          <img src="dessin.jpg" alt="デッサンと平面構成">
+          <div class="work-meta">
+            <h3>デッサンと平面構成</h3>
+            <p class="muted">デッサン / 平面構成 · 2025/Jul-Oct</p>
+          </div>
+        </article>
+
+        <article class="work-card" tabindex="0"
+                 data-title="Photograph：Botanica"
+                 data-desc="これらの写真はニーチェの「永劫回帰」と自然物と人工物に当てはめ、その時々の時間を切り取ったものである。季節が移ろい、芽が出て花が咲き枯れて土に還ること、噴水で上げられた水が重力で落下する様子などは儚く悲しいことであるだろうか？という意味をこめBotanicaと名前付けた。この写真を見て自然の循環は「悲劇ではなく力強い生命の肯定である」という私なりの解釈を感じて欲しい。"
+                 data-series='[
+                 "DSC_0792.JPG",
+                 "DSC_0636.JPG",
+                 "DSC_0699.JPG",
+                 "DSC_0705.JPG",
+                 "DSC_0942.JPG",
+                 "DSC_0800.JPG",
+                 "DSC_0816.JPG"
+                 ]'>
+          <img src="DSC_0792.JPG" alt="写真：Botanica">
+          <div class="work-meta">
+            <h3>Photograph：Botanica</h3>
+            <p class="muted">Photography · 2021–2025</p>
+          </div>
+        </article>
+
+        <article class="work-card" tabindex="0"
+                 data-title="UnityとBlender関係"
+                 data-desc="3Dモデル着用モデルの三面図やアバターを改変したりしてUnity撮影したもの"
+                 data-series='[
+                 "test.png",
+                 "Unity.png",
+                 "Unity2.jpg",
+                 "4.jpg",
+                 "5.jpg",
+                 "6.jpg",
+                 "7.jpg"
+                 ]'>
+          <img src="Unity2.png" alt="UnityとBlender関係">
+          <div class="work-meta">
+            <h3>UnityとBlender関係</h3>
+            <p class="muted">Graphic · 2023</p>
+          </div>
+        </article>
+
+        <!-- 追加のカードはここに -->
+      </div>
+
+      <p style="margin-top:12px;color:var(--muted);font-size:0.92rem">
+      </p>
+    </section>
+
+    <!-- PROCESS -->
+    <section id="process" aria-labelledby="process-title">
+      <h2 id="process-title" class="section-title">PROCESS</h2>
+      <div class="process-list" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="process-item" style="padding:12px;border-left:3px solid #f2f2f2;background:#fff;border:1px solid #f7f7f7;">
+          <strong>Unity 小物プロトタイプ — 試作→評価→改善</strong>
+          <p class="muted" style="margin-top:8px">モデリング→インポート→インタラクション設計の各段階でのメモや失敗、改善点を提示。</p>
+        </div>
+        <div class="process-item" style="padding:12px;border-left:3px solid #f2f2f2;background:#fff;border:1px solid #f7f7f7;">
+          <strong>写真シリーズ — 撮影ノート</strong>
+          <p class="muted" style="margin-top:8px">撮影地・時間・機材・構図メモ。意図した視点と偶発的な発見の記録。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title" class="section-title">CONTACT</h2>
+      <div class="contact">
+        <p>Email: <a href="mailto:yourname@example.com">yourname@example.com</a></p>
+        <p class="muted">Instagram / X: <a href="#" aria-label="Instagram">@yourhandle</a></p>
+      </div>
+
+      <footer>© 2025 Koichi Ushijima</footer>
+    </section>
+  </main>
+
+  <!-- MODAL -->
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <button class="modal-close" aria-label="閉じる" style="position:absolute;top:18px;right:18px;background:transparent;border:0;color:#fff;font-size:30px;cursor:pointer;">&times;</button>
+
+    <div class="modal-panel" role="document" style="position:relative;">
+      <div class="modal-media">
+        <img id="modalImg" src="" alt="">
+      </div>
+      <div class="modal-info">
+        <h3 id="modalTitle"></h3>
+        <p id="modalDesc" class="muted"></p>
+        <div class="modal-nav" style="margin-top:16px">
+          <button id="prevBtn" aria-label="前の作品">◀︎ Prev</button>
+          <button id="nextBtn" aria-label="次の作品">Next ▶︎</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Smooth scroll (offset when sidebar becomes top bar on narrow screens)
+    document.querySelectorAll('nav.primary a').forEach(anchor=>{
+      anchor.addEventListener('click', function(e){
+        const target = document.querySelector(this.getAttribute('href'));
+        if(!target) return;
+        e.preventDefault();
+        const sidebar = document.querySelector('aside');
+        const offset = window.innerWidth <= 700 ? (sidebar ? sidebar.offsetHeight : 56) : 0;
+        const top = target.getBoundingClientRect().top + window.scrollY - offset - 12;
+        window.scrollTo({ top, behavior: 'smooth' });
+      });
+    });
+
+    // Modal & gallery logic (cards -> modal with prev/next)
+    const cards = Array.from(document.querySelectorAll('.work-card'));
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modalImg');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const closeBtn = document.querySelector('.modal-close');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let currentSeries = [];
+    let currentSeriesIndex = 0;
+
+    function openModal(index){
+      const card = cards[index];
+      if(!card) return;
+
+      //const large = card.dataset.large || card.querySelector('img')?.src;
+      //modalImg.src = large;
+      //modalImg.alt = card.dataset.title || card.querySelector('.work-meta h3')?.textContent || '';
+      currentSeries = JSON.parse(card.dataset.series || "[]");
+      currentSeriesIndex = 0;
+      modalTitle.textContent = card.dataset.title || '';
+      modalDesc.textContent = card.dataset.desc || '';
+      
+      showImage();
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+      //currentIndex = index;
+      // focus the close button for accessibility
+      closeBtn.focus();      
+    }   
+    function showImage(){
+      modalImg.src = currentSeries[currentSeriesIndex];
+      modalImg.alt = modalTitle.textContent;
+    }
+
+    function showNext(){
+      if(currentSeries.length === 0) return;
+      currentSeriesIndex = (currentSeriesIndex + 1) % currentSeries.length;
+      showImage();
+    }
+    function showPrev(){
+      if(currentSeries.length === 0) return;
+      currentSeriesIndex = (currentSeriesIndex - 1 + currentSeries.length) % currentSeries.length;
+      showImage();
+    }    
+    function closeModal(){
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+      modalImg.src = '';
+      currentIndex = -1;
+    }
+    //function showNext(){ if(currentIndex >=0) openModal((currentIndex + 1) % cards.length); }
+    //function showPrev(){ if(currentIndex >=0) openModal((currentIndex - 1 + cards.length) % cards.length); }
+
+    // Attach events to cards
+    cards.forEach((card, idx) => {
+      card.addEventListener('click', () => openModal(idx));
+      card.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(idx); }
+      });
+    });
+
+    // Modal controls
+    closeBtn.addEventListener('click', closeModal);
+    prevBtn.addEventListener('click', showPrev);
+    nextBtn.addEventListener('click', showNext);
+
+    // Close when clicking outside panel
+    modal.addEventListener('click', (e) => {
+      if(e.target === modal) closeModal();
+    });
+
+    // Keyboard nav
+    document.addEventListener('keydown', (e) => {
+      if(!modal.classList.contains('open')) return;
+      if(e.key === 'Escape') closeModal();
+      if(e.key === 'ArrowRight') showNext();
+      if(e.key === 'ArrowLeft') showPrev();
+    });
+  </script>
+</body>
+</html>
