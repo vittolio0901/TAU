@@ -358,11 +358,19 @@
       // focus the close button for accessibility
       closeBtn.focus();      
     }   
-    function showImage(){
-      modalImg.src = currentSeries[currentSeriesIndex];
+     function showImage(){
+      const src = currentSeries[currentSeriesIndex];
+      modalImg.src = src;
       modalImg.alt = modalTitle.textContent;
-    }
 
+      modalImg.style.width = "";
+      modalImg.style.height = "";
+
+      if (src.includes("Unity.jpg","unity2.jpg","test.png")){
+        modalImg.style.width = "128px";
+        modalImg.style.height = "128px";
+      }
+    }
     function showNext(){
       if(currentSeries.length === 0) return;
       currentSeriesIndex = (currentSeriesIndex + 1) % currentSeries.length;
@@ -410,6 +418,7 @@
   </script>
 </body>
 </html>
+
 
 
 
