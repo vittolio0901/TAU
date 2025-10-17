@@ -161,6 +161,7 @@
     <nav class="primary" aria-label="Primary navigation">
       <a href="#about">ABOUT</a>
       <a href="#works">WORKS</a>
+      <a href="#works">GAME</a>
       <a href="#process">PROCESS</a>
       <a href="#contact">CONTACT</a>
     </nav>
@@ -264,6 +265,21 @@
       <p style="margin-top:12px;color:var(--muted);font-size:0.92rem">
       </p>
     </section>
+
+	<!-- GAME -->
+	<section id="minigame" aria-labelledby="minigame-title">
+  		<h2 id="minigame-title" class="section-title">MINI GAME: Guess the Number 🕹️</h2>
+  		<div id="gameContainer" style="padding: 16px; border: 1px solid #ddd; border-radius: 8px;">
+    		<p id="gameStatus" style="font-weight: 600; margin-bottom: 12px;"></p>
+    		<div style="display: flex; gap: 8px; align-items: center;">
+      			<input type="number" id="guessInput" min="1" max="10" placeholder="Enter 1-10" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 120px;">
+      			<button id="guessButton" style="background: #111; color: #fff; border: 0; padding: 8px 12px; border-radius: 6px; cursor: pointer;">Guess</button>
+      			<button id="gameResetButton" style="background: #e74c3c; color: #fff; border: 0; padding: 8px 12px; border-radius: 6px; cursor: pointer; display: none;">Play Again</button>
+    		</div>
+  		</div>
+	</section>
+
+
 
     <!-- PROCESS -->
     <section id="process" aria-labelledby="process-title">
@@ -414,26 +430,6 @@
       if(e.key === 'ArrowLeft') showPrev();
     });
   </script>
+  <script src="mini-game.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
