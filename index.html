@@ -150,6 +150,40 @@
 
     /* small helper */
     .muted{ color:var(--muted) !important; }
+
+/* Line Game container + button */
+.game-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* horizontal centering */
+  justify-content: center;
+  margin: 60px 0;
+}
+
+.game-canvas {
+  width: 600px;
+  height: 400px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  background: black;
+  margin-bottom: 12px; /* space between canvas and button */
+}
+
+.game-button {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  background-color: #27ae60;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.game-button:hover {
+  background-color: #219150;
+}
   </style>
 </head>
 <body>
@@ -268,7 +302,7 @@
 
 	<!-- GAME -->
 	<section id="minigame" aria-labelledby="minigame-title">
-  		<h2 id="minigame-title" class="section-title">MINI GAME: Guess the Number 🕹️</h2>
+  		<h2 id="minigame-title" class="section-title">MINI GAME: Guess the Number </h2>
   		<div id="gameContainer" style="padding: 16px; border: 1px solid #ddd; border-radius: 8px;">
     		<p id="gameStatus" style="font-weight: 600; margin-bottom: 12px;"></p>
     		<div style="display: flex; gap: 8px; align-items: center;">
@@ -279,7 +313,18 @@
   		</div>
 	</section>
 
+	<section id="p5sketch" aria-labelledby="p5sketch-title">
+  		<h2 id="p5sketch-title" class="section-title">Line Game</h2>
 
+  		<div class="game-section">
+    		<div id="p5-container" class="game-canvas"></div>
+    		<button id="reset-btn" class="game-button">Reset</button>
+  	</div>
+
+  	<p style="text-align:center; font-size:0.9rem; color:#666; margin-top:8px;">
+    	(Interactive animation — click to change direction)
+  	</p>
+	</section>
 
     <!-- PROCESS -->
     <section id="process" aria-labelledby="process-title">
@@ -431,5 +476,62 @@
     });
   </script>
   <script src="mini-game.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+<script>
+// --- LINE GAME INSTANCE ---
+let lineGame = function(p) {
+  let pos, vel;
+  const speed = 2.0;
+  const turnStrength = 0.05;
+
+  p.setup = function() {
+    let canvas = p.createCanvas(600, 400);
+    canvas.parent('p5-container');
+    pos = p.createVector(p.width / 2, p.height / 2);
+    vel = p5.Vector.random2D().mult(speed);
+    p.background(0);
+    p.strokeWeight(1.5);
+    p.blendMode(p.ADD);
+  };
+
+  p.draw = function() {
+    p.noStroke();
+    p.fill(0, 0, 0, 20);
+    p.rect(0, 0, p.width, p.height);
+
+    let angleChange = p.random(-turnStrength, turnStrength);
+    vel.rotate(angleChange);
+
+    p.stroke(160, 200, 255, 40);
+    let newPos = pos.copy().add(vel);
+    p.line(pos.x, pos.y, newPos.x, newPos.y);
+    pos.set(newPos);
+
+    if (pos.x < 0 || pos.x > p.width) vel.x *= -1;
+    if (pos.y < 0 || pos.y > p.height) vel.y *= -1;
+  };
+
+  p.mousePressed = function() {
+    let dir = p.createVector(p.mouseX - pos.x, p.mouseY - pos.y);
+    dir.normalize();
+    dir.mult(speed);
+    vel.set(dir);
+  };
+
+  p.clearCanvas = function() {
+    p.clear();
+    p.background(0);
+    pos = p.createVector(p.width / 2, p.height / 2);
+    vel = p5.Vector.random2D().mult(speed);
+  };
+};
+
+let lineGameInstance = new p5(lineGame);
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  lineGameInstance.clearCanvas();
+});
+
+</script>
 </body>
 </html>
